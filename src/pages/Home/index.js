@@ -33,7 +33,7 @@ export default function Home() {
         <Feather style={styles.icon} name="phone" size={100} />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('face-detector')}>
+      <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('face-touch-detector')}>
         <Feather style={styles.icon} name="user" size={100} />
       </TouchableOpacity>
 

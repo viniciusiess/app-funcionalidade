@@ -5,6 +5,8 @@ import { FontAwesome } from '@expo/vector-icons'
 import * as Permissions from 'expo-permissions'
 import * as MediaLibrary from 'expo-media-library'
 
+import AccessDanied from '../../components/AccessDanied'
+
 export default function CameraComponent() {
   const camRef = useRef(null)
   const [type, setType] = useState(Camera.Constants.Type.back)
@@ -29,7 +31,7 @@ export default function CameraComponent() {
   }
 
   if(hasPermission === false){
-    return <Text>Acesso negado!</Text>
+    return <AccessDanied />
   }
 
   async function takePicture(){

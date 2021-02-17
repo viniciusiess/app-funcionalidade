@@ -9,8 +9,8 @@ import Brightness from './pages/Brightness'
 import Calendar from './pages/Calendar'
 import CodeScanner from './pages/CodeScanner'
 import Contacts from './pages/Contacts'
-import FaceDetector from './pages/FaceDetector'
-import ImagePicker from './pages/ImagePicker'
+import FaceTouchDetector from './pages/FaceTouchDetector'
+import ImagePickerExample from './pages/ImagePicker'
 import Location from './pages/Location'
 import MediaLibrary from './pages/MediaLibrary'
 import Notifications from './pages/Notifications'
@@ -66,8 +66,8 @@ function Routes() {
         />
 
         <Stack.Screen 
-          name="face-detector" 
-          component={FaceDetector} 
+          name="face-touch-detector" 
+          component={FaceTouchDetector} 
           options={{ headerShow: false }}
         />
 
@@ -79,7 +79,7 @@ function Routes() {
 
         <Stack.Screen 
           name="image-picker" 
-          component={ImagePicker} 
+          component={ImagePickerExample} 
           options={{ headerShow: false }}
         />
 

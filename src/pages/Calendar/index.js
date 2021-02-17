@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons'
 import * as Permissions from 'expo-permissions'
+import { Calendar } from 'react-native-calendario';
 
-export default function Calendar() {
+import AccessPermited from '../../components/AccessPermited'
+import AccessDanied from '../../components/AccessDanied'
+
+export default function CalendarPage() {
   const [hasPermission, setHaspermission] = useState(null)
 
   useEffect(() => {
@@ -23,13 +26,61 @@ export default function Calendar() {
   }
 
   if(hasPermission === false){
-    return <Text>Acesso negado!</Text>
+    return <AccessDanied />
   }
 
   return (
     <View>
       <TouchableOpacity style={styles.button}>
-        <FontAwesome name="calendar-day" size={43} color="black" />
+        <Calendar
+          onChange={(range) => console.log(range)}
+          minDate={new Date(2018, 3, 20)}
+          startDate={new Date(2018, 3, 30)}
+          endDate={new Date(2018, 4, 5)}
+          theme={{
+            activeDayColor: {},
+            monthTitleTextStyle: {
+              color: '#6d95da',
+              fontWeight: '300',
+              fontSize: 16,
+            },
+            emptyMonthContainerStyle: {},
+            emptyMonthTextStyle: {
+              fontWeight: '200',
+            },
+            weekColumnsContainerStyle: {},
+            weekColumnStyle: {
+              paddingVertical: 10,
+            },
+            weekColumnTextStyle: {
+              color: '#b6c1cd',
+              fontSize: 13,
+            },
+            nonTouchableDayContainerStyle: {},
+            nonTouchableDayTextStyle: {},
+            startDateContainerStyle: {},
+            endDateContainerStyle: {},
+            dayContainerStyle: {},
+            dayTextStyle: {
+              color: '#2d4150',
+              fontWeight: '200',
+              fontSize: 15,
+            },
+            dayOutOfRangeContainerStyle: {},
+            dayOutOfRangeTextStyle: {},
+            todayContainerStyle: {},
+            todayTextStyle: {
+              color: '#6d95da',
+            },
+            activeDayContainerStyle: {
+              backgroundColor: '#6d95da',
+            },
+            activeDayTextStyle: {
+              color: 'white',
+            },
+            nonTouchableLastMonthDayTextStyle: {},
+          }}
+        />
       </TouchableOpacity>
     </View>
   );

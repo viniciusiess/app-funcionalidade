@@ -3,6 +3,9 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons'
 import * as Permissions from 'expo-permissions'
 
+import AccessPermited from '../../components/AccessPermited'
+import AccessDanied from '../../components/AccessDanied'
+
 export default function Contacts() {
   const [hasPermission, setHaspermission] = useState(null)
 
@@ -13,7 +16,7 @@ export default function Contacts() {
     })();
 
     (async () => {
-      const { status } = await Permissions.askAsync(Permissions.READ_PHONE_STATE)
+      const { status } = await Permissions.askAsync(Permissions.CONTACTS)
       setHaspermission(status === 'granted')
     })()
   }, [])
@@ -23,13 +26,13 @@ export default function Contacts() {
   }
 
   if(hasPermission === false){
-    return <Text>Acesso negado!</Text>
+    return <AccessDanied />
   }
 
   return (
     <View>
       <TouchableOpacity style={styles.button}>
-        <FontAwesome name="sun" size={43} color="black" />
+        <AccessPermited />
       </TouchableOpacity>
     </View>
   );

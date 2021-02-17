@@ -1,38 +1,84 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons'
-import * as Permissions from 'expo-permissions'
+import { StatusBar } from 'expo-status-bar';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import * as Location from 'expo-location'
 
-export default function Location() {
-  const [hasPermission, setHaspermission] = useState(null)
+import WeatherInfo from '../../components/WeatherInfo'
+import UnitsPicker from '../../components/UnitsPicker'
+import ReloadIcon from '../../components/ReloadIcon'
+import WeatherDetails from '../../components/WeatherDetails'
+import { colors } from '../../utils/index'
+
+const BASE_WEATHER_URL = 'https://api.openweathermap.org/data/2.5/weather?'
+const WEATHER_API_KEY =  ''
+
+export default function WeatherLocation() {
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [currentWeather, setCurrentWeather] = useState(null)
+  const [unitsSystem, setUnitsSystem] = useState('metric')
 
   useEffect(() => {
-    (async () => {
-      const { status } = await Location.requestPermissionsAsync()
-      setHaspermission(status === 'granted')
-    })();
+    load()
+  }, [unitsSystem])
 
-    (async () => {
-      const { status } = await Permissions.askAsync(Permissions.LOCATION)
-      setHaspermission(status === 'granted')
-    })()
-  }, [])
+  async function load() {
+    setCurrentWeather(null)
+    setErrorMessage(null)
+    try {
+      let { status } = await Location.requestPermissionsAsync()
 
-  if(hasPermission === null){
-    return <View />
+      if (status !== 'granted') {
+        setErrorMessage('Acess to location is needed to run the app')
+        return
+      }
+      const location = await Location.getCurrentPositionAsync()
+
+      const { latitude, longitude } = location.coords
+
+      const weatherUrl = `${BASE_WEATHER_URL}lat=${latitude}&lon=${longitude}&units=${unitsSystem}&appid=${WEATHER_API_KEY}&lang=pt_br`
+      
+      const response = await fetch(weatherUrl)
+
+      const result = await response.json()
+
+      if(response.ok) {
+        setCurrentWeather(result)
+      } else {
+        setErrorMessage(result.message)
+      }
+
+    } catch(error) {
+      setErrorMessage(error.message)
+    }
   }
 
-  if(hasPermission === false){
-    return <Text>Acesso negado!</Text>
+  if(currentWeather) {
+    return (
+      <View style={styles.container}>
+        <StatusBar style="auto" />
+        <View style={styles.main}>
+          <UnitsPicker unitsSyste={unitsSystem} setUnitsSystem={setUnitsSystem} />
+          <ReloadIcon load={load} />
+          <WeatherInfo currentWeather={currentWeather} />
+        </View>
+        <WeatherDetails currentWeather={currentWeather} unitsSystem={unitsSystem} />
+      </View>
+    )} else if(errorMessage) {
+    return (
+      <View style={styles.container}>
+        <ReloadIcon load={load} />
+        <Text style={{ textAlign: 'center' }}>{errorMessage}</Text>
+        <StatusBar style="auto" />
+      </View>
+    )
+  } else {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color={colors.PRIMARY_COLOR} />
+        <StatusBar style="auto" />
+      </View>
+    )
   }
-
-  return (
-    <View>
-      <TouchableOpacity style={styles.button}>
-        <FontAwesome name="sun" size={43} color="black" />
-      </TouchableOpacity>
-    </View>
-  );
 }
 
 const styles = StyleSheet.create({
@@ -40,4 +86,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+  main: {
+    justifyContent: 'center',
+    flex: 1
+  }
 });

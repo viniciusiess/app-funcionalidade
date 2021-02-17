@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons'
 import * as Permissions from 'expo-permissions'
+
+import AccessPermited from '../../components/AccessPermited'
+import AccessDanied from '../../components/AccessDanied'
 
 export default function AudioRecord() {
   const [hasPermission, setHaspermission] = useState(null)
@@ -23,14 +25,12 @@ export default function AudioRecord() {
   }
 
   if(hasPermission === false){
-    return <Text>Acesso negado!</Text>
+    return <AccessDanied />
   }
 
   return (
     <View>
-      <TouchableOpacity style={styles.button}>
-        <FontAwesome name="sun" size={43} color="black" />
-      </TouchableOpacity>
+      <AccessPermited />
     </View>
   );
 }
